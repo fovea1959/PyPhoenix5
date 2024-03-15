@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 #include <thread>
+
+#include <string.h>
 #include <unistd.h>
 
 using namespace ctre::phoenix;
@@ -31,6 +33,8 @@ void goFor1S(double power)
 		ctre::phoenix::unmanaged::Unmanaged::FeedEnable(100);
 
 		double current = talLeft.GetOutputCurrent();
+		int err = errno;
+		printf ("last error = %d (%s)\n", err, strerror(err));
 		double position = talLeft.GetSelectedSensorPosition(0);
 		int f = talLeft.IsFwdLimitSwitchClosed();
 		int b = talLeft.IsRevLimitSwitchClosed();
