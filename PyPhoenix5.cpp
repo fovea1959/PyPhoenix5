@@ -24,7 +24,7 @@ class Pet
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(example, m) {
+PYBIND11_MODULE(PyPhoenix5, m) {
     // optional module docstring
     m.doc() = "pybind11 example plugin";
 
