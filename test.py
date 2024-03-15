@@ -1,22 +1,15 @@
 import PyPhoenix5
-from PyPhoenix5 import add, Pet
-
-
-def test_add():
-    assert add(2, 3) == 5
-
-
-def test_pet():
-    my_dog = Pet('Pluto', 5)
-    assert my_dog.get_name() == 'Pluto'
-    assert my_dog.get_hunger() == 5
-    my_dog.go_for_a_walk()
-    assert my_dog.get_hunger() == 6
+import time
 
 def test_SRX():
     talon = PyPhoenix5.TalonSRX(1)
     print(talon)
     print(talon.get_device_id())
+    talon.set_power(0.5)
+    for i in range(100):
+        PyPhoenix5.feed_enable(100)
+        time.sleep(0.05)
+    talon.set_power(0.0)
 
 if __name__ == '__main__':
     test_SRX()
