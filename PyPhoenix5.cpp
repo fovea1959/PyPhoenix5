@@ -31,17 +31,20 @@ class Pet
         int hunger;
 };
 
+/*
+ * I couldn't figure out how to use pybind11 directly on the TalonSRX, the subclassing
+ * seemed to get in the way. Wrapping seems expedient.
+ */
 class TalonSRXWrapper
 {
     public:
-	TalonSRXWrapper(int id) {
-	    t = id;
-	}
+	TalonSRXWrapper(int id) : t{id} {}
 	~TalonSRXWrapper() {}
-	int get_device_id() { return t; }
+	int get_device_id() { return t.GetDeviceID(); }
+	void set_power(double power) { t.Set(ControlMode::PercentOutput, power); }
 
     private:
-	int t;
+	TalonSRX t;
 };
 
 namespace py = pybind11;
