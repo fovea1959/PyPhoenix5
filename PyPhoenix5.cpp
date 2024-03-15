@@ -1,10 +1,20 @@
+#define Phoenix_No_WPI // remove WPI dependencies
+#include "ctre/Phoenix.h"
+#include "ctre/phoenix/platform/Platform.hpp"
+#include "ctre/phoenix/unmanaged/Unmanaged.h"
+
 #include <pybind11/pybind11.h>
 
+#include <chrono>
+#include <iostream>
+#include <string>
+#include <string_view>
+#include <thread>
+#include <unistd.h>
 
 int add(int i, int j) {
     return i + j;
 }
-
 
 class Pet
 {
@@ -37,4 +47,7 @@ PYBIND11_MODULE(PyPhoenix5, m) {
         .def("go_for_a_walk", &Pet::go_for_a_walk)
         .def("get_hunger", &Pet::get_hunger)
         .def("get_name", &Pet::get_name);
+
+    py::class_<TalonSRX>(m, "TalonSRX")
+	.def(py::init<int>());
 }

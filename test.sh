@@ -1,3 +1,3 @@
 #!/bin/bash
 
-LD_LIBRARY_PATH=bin/lib:lib python3 test.py
+PYTHONPATH=bin LD_LIBRARY_PATH=bin python3 test.py
