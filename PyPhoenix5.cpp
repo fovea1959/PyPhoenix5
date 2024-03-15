@@ -31,6 +31,18 @@ class Pet
         int hunger;
 };
 
+class TalonSRXWrapper
+{
+    public:
+	TalonSRXWrapper(int id) {
+	    t = id;
+	}
+	~TalonSRXWrapper() {}
+	int get_device_id() { return t; }
+
+    private:
+	int t;
+};
 
 namespace py = pybind11;
 
@@ -48,7 +60,7 @@ PYBIND11_MODULE(PyPhoenix5, m) {
         .def("get_hunger", &Pet::get_hunger)
         .def("get_name", &Pet::get_name);
 
-    py::class_<TalonSRX,BaseTalon,BaseMotorController>(m, "TalonSRX")
+    py::class_<TalonSRXWrapper>(m, "TalonSRX")
 	.def(py::init<int>())
-	.def("get_device_id", &TalonSRX::GetDeviceID);
+	.def("get_device_id", &TalonSRXWrapper::get_device_id);
 }

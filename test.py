@@ -16,6 +16,7 @@ def test_pet():
 def test_SRX():
     talon = PyPhoenix5.TalonSRX(1)
     print(talon)
+    print(talon.get_device_id())
 
 if __name__ == '__main__':
     test_SRX()
