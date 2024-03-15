@@ -36,7 +36,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(PyPhoenix5, m) {
     // optional module docstring
-    m.doc() = "pybind11 example plugin";
+    m.doc() = "CTRE Phoenix5 example plugin";
 
     // define add function
     m.def("add", &add, "A function which adds two numbers");
@@ -48,6 +48,7 @@ PYBIND11_MODULE(PyPhoenix5, m) {
         .def("get_hunger", &Pet::get_hunger)
         .def("get_name", &Pet::get_name);
 
-    py::class_<TalonSRX>(m, "TalonSRX")
-	.def(py::init<int>());
+    py::class_<TalonSRX,BaseTalon,BaseMotorController>(m, "TalonSRX")
+	.def(py::init<int>())
+	.def("get_device_id", &TalonSRX::GetDeviceID);
 }
