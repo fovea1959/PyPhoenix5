@@ -4,8 +4,10 @@ import time
 def test_SRX():
   PyPhoenix5.set_phoenix_diagnostics_start_time(0)
   talon = PyPhoenix5.TalonSRX(1)
-  print(talon)
-  print(talon.get_device_id())
+  print("talon", talon)
+  print("device id", talon.get_device_id())
+  print("last error", talon.get_last_error())
+  print(talon.hi_bob())
   if True:
     talon.set_power(0.1)
     if True:
@@ -18,6 +20,7 @@ def test_SRX():
     PyPhoenix5.feed_enable(200)
     time.sleep(0.05)
     print(talon.get_position(), talon.is_fwd_limit_switch_closed(), talon.is_rev_limit_switch_closed())
+    print("last error", talon.get_last_error(), PyPhoenix5.get_error_text(talon.get_last_error()))
 
 
 if __name__ == '__main__':
