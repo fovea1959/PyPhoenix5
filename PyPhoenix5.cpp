@@ -43,6 +43,126 @@ class TalonSRXWrapper
     TalonSRX t;
 };
 
+std::string errtext(int i);
+
+namespace py = pybind11;
+
+PYBIND11_MODULE(PyPhoenix5, m) {
+  // optional module docstring
+  m.doc() = "CTRE Phoenix5 example plugin";
+
+  m.def("feed_enable", &feed_enable, "Feed the watchdog");
+
+  m.def("set_phoenix_diagnostics_start_time", &set_phoenix_diagnostics_start_time, "Set the delay for starting the diagnostics server");
+
+  py::class_<TalonSRXWrapper>(m, "TalonSRX")
+    .def(py::init<int>())
+    .def("get_device_id", &TalonSRXWrapper::get_device_id)
+    .def("get_last_error", &TalonSRXWrapper::get_last_error)
+    .def("set_power", &TalonSRXWrapper::set_power)
+    .def("get_output_current", &TalonSRXWrapper::get_output_current)
+    .def("get_position", &TalonSRXWrapper::get_position)
+    .def("is_fwd_limit_switch_closed", &TalonSRXWrapper::is_fwd_limit_switch_closed)
+    .def("is_rev_limit_switch_closed", &TalonSRXWrapper::is_rev_limit_switch_closed)
+    .def("set_brake", &TalonSRXWrapper::set_brake)
+    .def("hi_bob", &TalonSRXWrapper::hi_bob)
+    ;
+
+  m.def("get_error_text", &errtext, "Return the error text for a given code");
+
+  auto m_errorcode = m.def_submodule("ErrorCode", "Error codes");
+  // m_errorcode.attr("HI") = py::int_(123);
+  m_errorcode.attr("OK") = py::int_(0);
+  m_errorcode.attr("OKAY") = py::int_(0);
+  m_errorcode.attr("CAN_MSG_STALE") = py::int_(1);
+  m_errorcode.attr("CAN_TX_FULL") = py::int_(-1);
+  m_errorcode.attr("TxFailed") = py::int_(-1);
+  m_errorcode.attr("InvalidParamValue") = py::int_(-2);
+  m_errorcode.attr("CAN_INVALID_PARAM") = py::int_(-2);
+  m_errorcode.attr("RxTimeout") = py::int_(-3);
+  m_errorcode.attr("CAN_MSG_NOT_FOUND") = py::int_(-3);
+  m_errorcode.attr("TxTimeout") = py::int_(-4);
+  m_errorcode.attr("CAN_NO_MORE_TX_JOBS") = py::int_(-4);
+  m_errorcode.attr("UnexpectedArbId") = py::int_(-5);
+  m_errorcode.attr("CAN_NO_SESSIONS_AVAIL") = py::int_(-5);
+  m_errorcode.attr("BufferFull") = py::int_(+6);
+  m_errorcode.attr("CAN_OVERFLOW") = py::int_(-6);
+  m_errorcode.attr("SensorNotPresent") = py::int_(-7);
+  m_errorcode.attr("FirmwareTooOld") = py::int_(-8);
+  m_errorcode.attr("CouldNotChangePeriod") = py::int_(-9);
+  m_errorcode.attr("BufferFailure") = py::int_(-10);
+  m_errorcode.attr("FirwmwareNonFRC") = py::int_(-11);
+  m_errorcode.attr("GeneralError") = py::int_(-100);
+  m_errorcode.attr("GENERAL_ERROR") = py::int_(-100);
+  m_errorcode.attr("SIG_NOT_UPDATED") = py::int_(-200);
+  m_errorcode.attr("SigNotUpdated") = py::int_(-200);
+  m_errorcode.attr("NotAllPIDValuesUpdated") = py::int_(-201);
+  m_errorcode.attr("GEN_PORT_ERROR") = py::int_(-300);
+  m_errorcode.attr("PORT_MODULE_TYPE_MISMATCH") = py::int_(-301);
+  m_errorcode.attr("GEN_MODULE_ERROR") = py::int_(-400);
+  m_errorcode.attr("MODULE_NOT_INIT_SET_ERROR") = py::int_(-401);
+  m_errorcode.attr("MODULE_NOT_INIT_GET_ERROR") = py::int_(-402);
+  m_errorcode.attr("WheelRadiusTooSmall") = py::int_(-500);
+  m_errorcode.attr("TicksPerRevZero") = py::int_(-501);
+  m_errorcode.attr("DistanceBetweenWheelsTooSmall") = py::int_(-502);
+  m_errorcode.attr("GainsAreNotSet") = py::int_(-503);
+  m_errorcode.attr("WrongRemoteLimitSwitchSource") = py::int_(-504);
+  m_errorcode.attr("DoubleVoltageCompensatingWPI") = py::int_(-505);
+  m_errorcode.attr("CANdleAnimSlotOutOfBounds") = py::int_(-506);
+  m_errorcode.attr("IncompatibleMode") = py::int_(-600);
+  m_errorcode.attr("InvalidHandle") = py::int_(-601);
+  m_errorcode.attr("FeatureRequiresHigherFirm") = py::int_(-700);
+  m_errorcode.attr("MotorControllerFeatureRequiresHigherFirm") = py::int_(-701);
+  m_errorcode.attr("TalonFeatureRequiresHigherFirm") = py::int_(-701); // MotorControllerFeatureRequiresHigherFirm);
+  m_errorcode.attr("ConfigFactoryDefaultRequiresHigherFirm") = py::int_(-702);
+  m_errorcode.attr("ConfigMotionSCurveRequiresHigherFirm") = py::int_(-703);
+  m_errorcode.attr("TalonFXFirmwarePreVBatDetect") = py::int_(-704);
+  m_errorcode.attr("CANdleAnimationsRequireHigherFirm") = py::int_(-705);
+  m_errorcode.attr("LibraryCouldNotBeLoaded") = py::int_(-800);
+  m_errorcode.attr("MissingRoutineInLibrary") = py::int_(-801);
+  m_errorcode.attr("ResourceNotAvailable") = py::int_(-802);
+  m_errorcode.attr("MusicFileNotFound") = py::int_(-900);
+  m_errorcode.attr("MusicFileWrongSize") = py::int_(-901);
+  m_errorcode.attr("MusicFileTooNew") = py::int_(-902);
+  m_errorcode.attr("MusicFileInvalid") = py::int_(-903);
+  m_errorcode.attr("InvalidOrchestraAction") = py::int_(-904);
+  m_errorcode.attr("MusicFileTooOld") = py::int_(-905);
+  m_errorcode.attr("MusicInterrupted") = py::int_(-906);
+  m_errorcode.attr("MusicNotSupported") = py::int_(-907);
+  m_errorcode.attr("kInvalidInterface") = py::int_(-1000);
+  m_errorcode.attr("kInvalidGuid") = py::int_(-1001);
+  m_errorcode.attr("kInvalidClass") = py::int_(-1002);
+  m_errorcode.attr("kInvalidProtocol") = py::int_(-1003);
+  m_errorcode.attr("kInvalidPath") = py::int_(-1004);
+  m_errorcode.attr("kGeneralWinUsbError") = py::int_(-1005);
+  m_errorcode.attr("kFailedSetup") = py::int_(-1006);
+  m_errorcode.attr("kListenFailed") = py::int_(-1007);
+  m_errorcode.attr("kSendFailed") = py::int_(-1008);
+  m_errorcode.attr("kReceiveFailed") = py::int_(-1009);
+  m_errorcode.attr("kInvalidRespFormat") = py::int_(-1010);
+  m_errorcode.attr("kWinUsbInitFailed") = py::int_(-1011);
+  m_errorcode.attr("kWinUsbQueryFailed") = py::int_(-1012);
+  m_errorcode.attr("kWinUsbGeneralError") = py::int_(-1013);
+  m_errorcode.attr("kAccessDenied") = py::int_(-1014);
+  m_errorcode.attr("kFirmwareInvalidResponse") = py::int_(-1015);
+  m_errorcode.attr("PulseWidthSensorNotPresent") = py::int_(+10);
+  m_errorcode.attr("GeneralWarning") = py::int_(100);
+  m_errorcode.attr("FeatureNotSupported") = py::int_(101);
+  m_errorcode.attr("NotImplemented") = py::int_(102);
+  m_errorcode.attr("FirmVersionCouldNotBeRetrieved") = py::int_(103);
+  m_errorcode.attr("FeaturesNotAvailableYet") = py::int_(104);
+  m_errorcode.attr("ControlModeNotValid") = py::int_(105);
+  m_errorcode.attr("ControlModeNotSupportedYet") = py::int_(106);
+  m_errorcode.attr("CascadedPIDNotSupporteYet") = py::int_(107);
+  m_errorcode.attr("AuxiliaryPIDNotSupportedYet") = py::int_(107);
+  m_errorcode.attr("RemoteSensorsNotSupportedYet") = py::int_(108);
+  m_errorcode.attr("MotProfFirmThreshold") = py::int_(109);
+  m_errorcode.attr("MotProfFirmThreshold2") = py::int_(110);
+  m_errorcode.attr("SimDeviceNotFound") = py::int_(200);
+  m_errorcode.attr("SimPhysicsTypeNotSupported") = py::int_(201);
+  m_errorcode.attr("SimDeviceAlreadyExists") = py::int_(202);
+}
+
 std::string errtext(int i){
   switch(i) {
     case ctre::phoenix::OK: // 0
@@ -204,31 +324,4 @@ std::string errtext(int i){
     default:
       return "!!!!!!!!!!!!!!!!";
   }
-}
-
-namespace py = pybind11;
-
-PYBIND11_MODULE(PyPhoenix5, m) {
-  // optional module docstring
-  m.doc() = "CTRE Phoenix5 example plugin";
-
-  m.def("feed_enable", &feed_enable, "Feed the watchdog");
-
-  m.def("set_phoenix_diagnostics_start_time", &set_phoenix_diagnostics_start_time, "Set the delay for starting the diagnostics server");
-
-  py::class_<TalonSRXWrapper>(m, "TalonSRX")
-    .def(py::init<int>())
-    .def("get_device_id", &TalonSRXWrapper::get_device_id)
-    .def("get_last_error", &TalonSRXWrapper::get_last_error)
-    .def("set_power", &TalonSRXWrapper::set_power)
-    .def("get_output_current", &TalonSRXWrapper::get_output_current)
-    .def("get_position", &TalonSRXWrapper::get_position)
-    .def("is_fwd_limit_switch_closed", &TalonSRXWrapper::is_fwd_limit_switch_closed)
-    .def("is_rev_limit_switch_closed", &TalonSRXWrapper::is_rev_limit_switch_closed)
-    .def("set_brake", &TalonSRXWrapper::set_brake)
-    .def("hi_bob", &TalonSRXWrapper::hi_bob)
-    ;
-
-  m.def("get_error_text", &errtext, "Return the error text for a given code");
-
 }

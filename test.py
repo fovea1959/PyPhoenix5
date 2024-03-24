@@ -3,6 +3,7 @@ import time
 
 def test_SRX():
   PyPhoenix5.set_phoenix_diagnostics_start_time(0)
+  print(PyPhoenix5.ErrorCode.__dir__())
   talon = PyPhoenix5.TalonSRX(1)
   print("talon", talon)
   print("device id", talon.get_device_id())
@@ -28,4 +29,3 @@ if __name__ == '__main__':
     test_SRX()
   except KeyboardInterrupt:
     pass
-

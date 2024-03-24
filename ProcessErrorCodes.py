@@ -17,3 +17,6 @@ with open('ErrorCode.txt', 'r') as f:
     for n, v in nv:
         print(f'    case ctre::phoenix::{n}: // {v}')
         print(f'      return "{n}";')
+
+    for n, v in nv:
+        print(f' m_errorcode.attr("{n}") = py::int_({v});')
