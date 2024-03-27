@@ -35,7 +35,7 @@ void goFor1S(double power)
 
 		double current = talLeft.GetOutputCurrent();
 		ErrorCode err = talLeft.GetLastError();
-		if (err != ErrorCprintf ("last error = %d\n", err);
+		if (err != ErrorCode::OK) printf ("last error = %d\n", err);
 		double position = talLeft.GetSelectedSensorPosition(0);
 		int f = talLeft.IsFwdLimitSwitchClosed();
 		int b = talLeft.IsRevLimitSwitchClosed();
