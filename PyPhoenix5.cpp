@@ -23,21 +23,35 @@ class TalonSRXWrapper
   public:
     TalonSRXWrapper(int id) : t{id} {}
     ~TalonSRXWrapper() {}
+    int clear_sticky_faults(int timeoutMs) { return t.ClearStickyFaults(timeoutMs); }
+    int config_kI(int slotIdx, double value, int timeoutMs) { return t.Config_kI(slotIdx, value, timeoutMs); }
+    int config_kP(int slotIdx, double value, int timeoutMs) { return t.Config_kP(slotIdx, value, timeoutMs); }
+    double get_applied_power() { return t.GetMotorOutputPercent() / 100.0; }
     int get_device_id() { return t.GetDeviceID(); }
     int get_last_error() { return t.GetLastError(); }
-    int set_power(double power) { 
-      t.Set(ControlMode::PercentOutput, power);
-      return t.GetLastError();
-    }
-    double get_output_current() { return t.GetOutputCurrent(); }
     double get_position() { return t.GetSelectedSensorPosition(); }
+    double get_stator_current() { return t.GetStatorCurrent(); }
+    int get_sticky_faults() {
+      StickyFaults s;
+      t.GetStickyFaults(s);
+      return s.ToBitfield();
+    }
+    double get_supply_current() { return t.GetSupplyCurrent(); }
+    double get_temperature() { return t.GetTemperature(); }
     bool is_fwd_limit_switch_closed() { return t.IsFwdLimitSwitchClosed() != 0; }
     bool is_rev_limit_switch_closed() { return t.IsRevLimitSwitchClosed() != 0; }
     int set_brake(bool brake) { 
       t.SetNeutralMode(brake ? NeutralMode::Brake : NeutralMode::Coast);
       return t.GetLastError();
     }
-    std::string hi_bob() { return "Hi, Bob!"; }
+    int set_position(double position) { 
+      t.Set(ControlMode::Position, position);
+      return t.GetLastError();
+    }
+    int set_power(double power) { 
+      t.Set(ControlMode::PercentOutput, power);
+      return t.GetLastError();
+    }
 
   private:
     TalonSRX t;
@@ -49,7 +63,7 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(PyPhoenix5, m) {
   // optional module docstring
-  m.doc() = "CTRE Phoenix5 example plugin";
+  m.doc() = "CTRE Phoenix5 plugin";
 
   m.def("feed_enable", &feed_enable, "Feed the watchdog");
 
@@ -57,15 +71,22 @@ PYBIND11_MODULE(PyPhoenix5, m) {
 
   py::class_<TalonSRXWrapper>(m, "TalonSRX")
     .def(py::init<int>())
+    .def("clear_sticky_faults", &TalonSRXWrapper::clear_sticky_faults)
+    .def("config_kI", &TalonSRXWrapper::config_kI)
+    .def("config_kP", &TalonSRXWrapper::config_kP)
+    .def("get_applied_power", &TalonSRXWrapper::get_applied_power)
     .def("get_device_id", &TalonSRXWrapper::get_device_id)
     .def("get_last_error", &TalonSRXWrapper::get_last_error)
-    .def("set_power", &TalonSRXWrapper::set_power)
-    .def("get_output_current", &TalonSRXWrapper::get_output_current)
     .def("get_position", &TalonSRXWrapper::get_position)
+    .def("get_stator_current", &TalonSRXWrapper::get_stator_current)
+    .def("get_sticky_faults", &TalonSRXWrapper::get_sticky_faults)
+    .def("get_supply_current", &TalonSRXWrapper::get_supply_current)
+    .def("get_temperature", &TalonSRXWrapper::get_temperature)
     .def("is_fwd_limit_switch_closed", &TalonSRXWrapper::is_fwd_limit_switch_closed)
     .def("is_rev_limit_switch_closed", &TalonSRXWrapper::is_rev_limit_switch_closed)
     .def("set_brake", &TalonSRXWrapper::set_brake)
-    .def("hi_bob", &TalonSRXWrapper::hi_bob)
+    .def("set_position", &TalonSRXWrapper::set_position)
+    .def("set_power", &TalonSRXWrapper::set_power)
     ;
 
   m.def("get_error_text", &errtext, "Return the error text for a given code");
