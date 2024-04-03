@@ -56,14 +56,14 @@ int main() {
 	printf ("device id = %d", talLeft.GetDeviceID());
 	while (true) {
 		talLeft.SetNeutralMode(NeutralMode::Brake);
-		goFor1S(0.2);
+		goFor1S(0.4);
 		goFor1S(0.0);
-		goFor1S(-0.2);
+		goFor1S(-0.4);
 		goFor1S(0.0);
 		talLeft.SetNeutralMode(NeutralMode::Coast);
-		goFor1S(0.2);
+		goFor1S(0.4);
 		goFor1S(0.0);
-		goFor1S(-0.2);
+		goFor1S(-0.4);
 		goFor1S(0.0);
 		while (true) {
 			goFor1S(0.0);
