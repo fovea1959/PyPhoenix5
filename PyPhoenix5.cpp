@@ -24,13 +24,22 @@ class TalonSRXWrapper
     TalonSRXWrapper(int id) : t{id} {}
     ~TalonSRXWrapper() {}
     int clear_sticky_faults(int timeoutMs) { return t.ClearStickyFaults(timeoutMs); }
+    int config_closed_loop_peak_output(int slotIdx, double value, int timeoutMs) { return t.ConfigClosedLoopPeakOutput(slotIdx, value, timeoutMs); }
+    int config_kD(int slotIdx, double value, int timeoutMs) { return t.Config_kD(slotIdx, value, timeoutMs); }
     int config_kI(int slotIdx, double value, int timeoutMs) { return t.Config_kI(slotIdx, value, timeoutMs); }
     int config_kP(int slotIdx, double value, int timeoutMs) { return t.Config_kP(slotIdx, value, timeoutMs); }
-    double get_applied_power() { return t.GetMotorOutputPercent() / 100.0; }
+    int config_peak_output_forward(double value, int timeoutMs) { return t.ConfigPeakOutputForward(value, timeoutMs); }
+    int config_peak_output_reverse(double value, int timeoutMs) { return t.ConfigPeakOutputReverse(value, timeoutMs); }
+    double get_applied_power() { return t.GetMotorOutputPercent(); }
     bool get_inverted() { return t.GetInverted(); }
     int get_device_id() { return t.GetDeviceID(); }
     int get_last_error() { return t.GetLastError(); }
     double get_position() { return t.GetSelectedSensorPosition(); }
+    std::string get_slot_configuration_string(int slotIdx, int timeoutMs) {
+      SlotConfiguration slotConfiguration;
+      t.GetSlotConfigs(slotConfiguration, slotIdx, timeoutMs);
+      return slotConfiguration.toString();
+    }
     double get_stator_current() { return t.GetStatorCurrent(); }
     int get_sticky_faults() {
       StickyFaults s;
@@ -57,6 +66,10 @@ class TalonSRXWrapper
       t.Set(ControlMode::PercentOutput, power);
       return t.GetLastError();
     }
+    int set_sensor_phase(bool inverted) { 
+      t.SetSensorPhase(inverted);
+      return t.GetLastError();
+    }
 
   private:
     TalonSRX t;
@@ -77,13 +90,18 @@ PYBIND11_MODULE(PyPhoenix5, m) {
   py::class_<TalonSRXWrapper>(m, "TalonSRX")
     .def(py::init<int>())
     .def("clear_sticky_faults", &TalonSRXWrapper::clear_sticky_faults)
+    .def("config_closed_loop_peak_output", &TalonSRXWrapper::config_closed_loop_peak_output)
+    .def("config_kD", &TalonSRXWrapper::config_kD)
     .def("config_kI", &TalonSRXWrapper::config_kI)
     .def("config_kP", &TalonSRXWrapper::config_kP)
+    .def("config_peak_output_forward", &TalonSRXWrapper::config_peak_output_forward)
+    .def("config_peak_output_reverse", &TalonSRXWrapper::config_peak_output_reverse)
     .def("get_applied_power", &TalonSRXWrapper::get_applied_power)
     .def("get_device_id", &TalonSRXWrapper::get_device_id)
     .def("get_inverted", &TalonSRXWrapper::get_inverted)
     .def("get_last_error", &TalonSRXWrapper::get_last_error)
     .def("get_position", &TalonSRXWrapper::get_position)
+    .def("get_slot_configuration_string", &TalonSRXWrapper::get_slot_configuration_string)
     .def("get_stator_current", &TalonSRXWrapper::get_stator_current)
     .def("get_sticky_faults", &TalonSRXWrapper::get_sticky_faults)
     .def("get_supply_current", &TalonSRXWrapper::get_supply_current)
@@ -94,6 +112,7 @@ PYBIND11_MODULE(PyPhoenix5, m) {
     .def("set_inverted", &TalonSRXWrapper::set_inverted)
     .def("set_position", &TalonSRXWrapper::set_position)
     .def("set_power", &TalonSRXWrapper::set_power)
+    .def("set_sensor_phase", &TalonSRXWrapper::set_sensor_phase)
     ;
 
   m.def("get_error_text", &errtext, "Return the error text for a given code");
