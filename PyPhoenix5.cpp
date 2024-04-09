@@ -27,6 +27,7 @@ class TalonSRXWrapper
     int config_kI(int slotIdx, double value, int timeoutMs) { return t.Config_kI(slotIdx, value, timeoutMs); }
     int config_kP(int slotIdx, double value, int timeoutMs) { return t.Config_kP(slotIdx, value, timeoutMs); }
     double get_applied_power() { return t.GetMotorOutputPercent() / 100.0; }
+    bool get_inverted() { return t.GetInverted(); }
     int get_device_id() { return t.GetDeviceID(); }
     int get_last_error() { return t.GetLastError(); }
     double get_position() { return t.GetSelectedSensorPosition(); }
@@ -42,6 +43,10 @@ class TalonSRXWrapper
     bool is_rev_limit_switch_closed() { return t.IsRevLimitSwitchClosed() != 0; }
     int set_brake(bool brake) { 
       t.SetNeutralMode(brake ? NeutralMode::Brake : NeutralMode::Coast);
+      return t.GetLastError();
+    }
+    int set_inverted(bool inverted) { 
+      t.SetInverted(inverted);
       return t.GetLastError();
     }
     int set_position(double position) { 
@@ -76,6 +81,7 @@ PYBIND11_MODULE(PyPhoenix5, m) {
     .def("config_kP", &TalonSRXWrapper::config_kP)
     .def("get_applied_power", &TalonSRXWrapper::get_applied_power)
     .def("get_device_id", &TalonSRXWrapper::get_device_id)
+    .def("get_inverted", &TalonSRXWrapper::get_inverted)
     .def("get_last_error", &TalonSRXWrapper::get_last_error)
     .def("get_position", &TalonSRXWrapper::get_position)
     .def("get_stator_current", &TalonSRXWrapper::get_stator_current)
@@ -85,6 +91,7 @@ PYBIND11_MODULE(PyPhoenix5, m) {
     .def("is_fwd_limit_switch_closed", &TalonSRXWrapper::is_fwd_limit_switch_closed)
     .def("is_rev_limit_switch_closed", &TalonSRXWrapper::is_rev_limit_switch_closed)
     .def("set_brake", &TalonSRXWrapper::set_brake)
+    .def("set_inverted", &TalonSRXWrapper::set_inverted)
     .def("set_position", &TalonSRXWrapper::set_position)
     .def("set_power", &TalonSRXWrapper::set_power)
     ;
