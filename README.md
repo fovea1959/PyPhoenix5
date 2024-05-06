@@ -1,39 +1,20 @@
-[![Build Status](https://travis-ci.org/bast/pybind11-demo.svg?branch=master)](https://travis-ci.org/bast/pybind11-demo/builds)
-[![License](https://img.shields.io/badge/license-%20MPL--v2.0-blue.svg)](../master/LICENSE)
+# PyPhoenix5 binding
 
+These are bindings from Python to Cross The Road Electronics phoenix5 library. Much of this is from pybind11 examples.
 
-# pybind11 demo
+## How to build this puppy
 
-Demonstrates how to call a C++ class from Python using pybind11.
-
-Tested on Linux and Mac: https://travis-ci.org/bast/pybind11-demo/builds
-
-
-## How to build this demo
+This is from a fresh Raspberry Pi bookworm install:
 
 ```
-git clone --recursive https://github.com/bast/pybind11-demo.git
-cd pybind11-demo
+sudo apt install git gh cmake python3-full python3-dev python3-pip
+pip install --user --break-system-packages pybind11-stubgen
+git clone --recursive https://github.com/fovea1959/PyPhoenix5.git
+cd PyPhoenix5
 mkdir build
 cd build
-cmake ..
+cmake -Wno-dev ..
 make
-```
-
-
-## Example test run
-
-```python
->>> from example import add
->>> add(2, 3)
-5
->>> from example import Pet
->>> my_dog = Pet('Pluto', 5)
->>> my_dog.get_name()
-'Pluto'
->>> my_dog.get_hunger()
-5
->>> my_dog.go_for_a_walk()
->>> my_dog.get_hunger()
-6
+cd ..
+./makestubs.sh
 ```

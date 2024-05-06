@@ -1,5 +1,4 @@
 #!/bin/bash
 
-. venv/bin/activate
-PYTHONPATH=bin LD_LIBRARY_PATH=bin pybind11-stubgen PyPhoenix5
+PYTHONPATH=bin LD_LIBRARY_PATH=bin ~/.local/bin/pybind11-stubgen PyPhoenix5
 find stubs -ls
